@@ -1,0 +1,53 @@
+{
+    "sample": {
+        "methods": {
+            "sample.foo": [],
+            "sample.doo": [],
+            "sample.other": [
+                "sample.deeper.levelOne",
+                "myObject.something.simpleIt.okie"
+            ]
+        },
+        "object": {
+            "sample.newTest.check": [],
+            "sample.deeper.levelOne": [
+                "sample.doo"
+            ],
+            "sample.deeper.leveltwo.funct": [
+                "sample.deeper.levelOne",
+                "sample.newObject.check"
+            ],
+            "sample.deeper.leveltwo.levelthree.level.func": [
+                "sample.other",
+                "myObject.something.aTest"
+            ],
+            "sample.deeper.leveltwo.levelthree.level.levellevel.ff": [],
+            "sample.deeper.leveltwo.levelthree.level.levellevel.LL.aa": [],
+            "sample.deeper.leveltwo.levelthree.level.levellevel.LL.SS.ss": [],
+            "sample.deeper.leveltwo.levelthree.level.levellevel.LL.SS.OO.oo": [],
+            "sample.newObject.check": [
+                "sample.newTest.check",
+                "myObject.deeepASS.how.deep.can.it.go"
+            ]
+        }
+    },
+    "sampleConst": {
+        "methods": {},
+        "object": {}
+    },
+    "myObject": {
+        "methods": {
+            "myObject.meth": [
+                "sample.deeper.leveltwo.levelthree.level.levellevel.LL.SS.OO.oo"
+            ]
+        },
+        "object": {
+            "myObject.something.aTest": [],
+            "myObject.something.just": [
+                "sample.deeper.leveltwo.levelthree.level.func"
+            ],
+            "myObject.something.simpleIt.okie": [],
+            "myObject.deeepASS.how.deep.can.it.go": []
+        }
+    }
+}

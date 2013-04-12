@@ -38,12 +38,16 @@ window.objectAnalytics = (function (console) {
                 } else {
                     return new OA(settings,objects,objectListner).init();
                 }
+
             };
 
             var o = {
 
                 init : function(){console.log('OA initialized',this);
                     var _t = this;
+
+                    // parent obj
+
 
                     if (typeof _t.objectListner !== 'undefined'){
 
@@ -419,13 +423,105 @@ window.objectAnalytics = (function (console) {
                 turnMe : function(){
                     var _t = this;
                     return {
-                        json : function(){
+                        json : function(object){
                             console.log('o',_t);
                            _t.jsonData = JSON.stringify(_t.jsonReady);
+                            return JSON.stringify(object);
                         },
                         object : function(){
 
                            _t.jsonObject = JSON.parse(_t.jsonData);
+                            return JSON.parse(_t.jsonData);
+                        }
+                    };
+                },
+
+                codeFlowerGraph : function () {
+                    var _t = this, sizeMultiplier = 100;
+                    // source http://redotheweb.com/CodeFlower/
+                    return {
+                        parseJson : function () {
+                            var json   = _t.turnMe().object(),
+                                flower = {};
+                            console.log('json',json);
+                            flower['name'] = 'root';
+
+                            for (var obj in json) {
+                                if(json.hasOwnProperty(obj)) {
+                                    if (!('children' in flower)) {
+                                        flower['children'] = [];
+
+                                    }
+                                    var flowerParent = flower;
+                                    if (obj.indexOf('Const') === -1) {
+                                        var chart = {name : obj,children : [], size:0}; // size
+                                        flowerParent.children.push(chart);
+                                        var objectPostion = flowerParent.children.length-1;
+                                        console.log('objecPosition',objectPostion);
+                                        for (var name in json[obj]) {
+                                            var size = 0;
+                                            if (json[obj].hasOwnProperty(name)) {
+
+                                                for(var method  in json[obj][name]) {
+
+                                                    if(json[obj][name][method].length === 0) {
+
+                                                        var methody = {
+                                                            name : method,
+                                                            size : 0.65 * sizeMultiplier,
+                                                            language : obj
+                                                        };
+                                                        flowerParent.children[objectPostion].children.push(methody);
+                                                        size +=1;
+                                                    } else {
+
+                                                        var extendMethod = {
+                                                            name : method,
+                                                            children : [],
+                                                            size: sizeMultiplier * 100
+                                                        };
+
+                                                        for ( var x = 0, l = json[obj][name][method].length; x < l; x+=1) {
+
+                                                            var item = {
+                                                                name : json[obj][name][method][x],
+                                                                size : 1.25 * sizeMultiplier,
+                                                                language: obj
+                                                            };
+
+                                                            extendMethod.children.push(item);
+                                                            size +=1;
+                                                        }
+                                                        flowerParent.children[objectPostion].children.push(extendMethod);
+                                                    }
+                                                }
+                                                flowerParent.children.size = size * sizeMultiplier;
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+
+                                var sizer = function () {
+                                    //
+                                };
+                            }
+
+                            _t.flowerJson = flower;
+
+                            return this;
+                        },
+
+                        displayFlower : function (id, size, jsonData) {
+
+                            var id = id || '#flower',
+                                size = size || {width: window.innerWidth, height : window.innerHeight},
+                                data  =jsonData || _t.flowerJson; //_t.turnMe().object(_t.turnMe().json(_t.flowerJson));
+                            console.log('id',id,'size',size,'data',data);
+                            var myFlower = new CodeFlower(id, size.width, size.height);
+                            myFlower.update(data);
                         }
                     };
                 },
@@ -446,6 +542,10 @@ window.objectAnalytics = (function (console) {
                     _t.integrateCrossObjectMethods();
                     _t.configureAnalyticsForJson();
                     _t.turnMe().json();
+
+                    _t.codeFlowerGraph().parseJson().displayFlower();
+
+
                 },
 
                 help : function(){
@@ -476,6 +576,17 @@ window.objectAnalytics = (function (console) {
 
             return OA;
         })(window.console);
+
+        $(document).ready(function(){
+            window.OA = new window.objectAnalytics('default',[{'events':eventsProto,'eventsConst':eventsConst},
+                        {'badgeville':badgeProto,'badgeConst':badgeConst},{'ureport':uReportProto,'uReportConst':uReportConst},
+                        {'user':userProto,'userConst':userConst},{'omniture':omnitureProto,'omnitureConst':omnitureConst},
+                        {'idms':idmsProto,'idmsConst':idmsConst}, {'livefyre':livefyreProto,'livefyreConst':livefyreConst},
+                        {'whatcounts':whatCProto,'whatCConst':whatCConst,'excludeMethod':['dom']},         {'domProto':domProto,'domConst':domConst},{'toolProto':toolProto,'toolConst':toolConst},{'requireProto':requireProto,'requireConst':requireConst},{'janrainProto':janrainProto,'janrainConst':janrainConst}
+            ]);
+
+            OA.start();
+        });
     /*
     ['tools',toolProto,toolConst],['dom',domProto,domConst],['require',requireProto,requireConst],
                         ['backplane', backplaneProto,backplaneConst],['janrain',janrainProto,janrainConst],
@@ -495,5 +606,12 @@ window.objectAnalytics = (function (console) {
             {'idms':idmsProto,'idmsConst':idmsConst}, {'livefyre':livefyreProto,'livefyreConst':livefyreConst},
             {'whatcounts':whatCProto,'whatCConst':whatCConst,'excludeMethod':['dom']}
     ]);
+
+    window.OA = new window.objectAnalytics('default',[{'events':eventsProto,'eventsConst':eventsConst},
+                {'badgeville':badgeProto,'badgeConst':badgeConst},{'ureport':uReportProto,'uReportConst':uReportConst},
+                {'user':userProto,'userConst':userConst},{'omniture':omnitureProto,'omnitureConst':omnitureConst},
+                {'idms':idmsProto,'idmsConst':idmsConst}, {'livefyre':livefyreProto,'livefyreConst':livefyreConst},
+                {'whatcounts':whatCProto,'whatCConst':whatCConst,'excludeMethod':['dom']},         {'domProto':domProto,'domConst':domConst},{'toolProto':toolProto,'toolConst':toolConst},{'requireProto':requireProto,'requireConst':requireConst},{'janrainProto':janrainProto,'janrainConst':janrainConst}
+        ]);
     // {'whatcounts':whatCProto,'whatCConst':whatCConst},{'idms':idmsProto,'idmsConst':idmsConst}]);
     */
