@@ -517,7 +517,7 @@ window.objectAnalytics = (function (console) {
                         displayFlower : function (id, size, jsonData) {
 
                             var id = id || '#flower',
-                                size = size || {width: window.innerWidth, height : window.innerHeight},
+                                size = size || {width: window.innerWidth-20, height : window.innerHeight},
                                 data  =jsonData || _t.flowerJson; //_t.turnMe().object(_t.turnMe().json(_t.flowerJson));
                             console.log('id',id,'size',size,'data',data);
                             var myFlower = new CodeFlower(id, size.width, size.height);
