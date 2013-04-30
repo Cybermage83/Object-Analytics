@@ -1,5 +1,5 @@
 window.objectAnalytics = (function (console) {
-            /*syntax
+            /*syntax minor commit
             @settings : 'default','custom'
             @objects : [{'namespace':object,name: function&Constructor}]
             */
